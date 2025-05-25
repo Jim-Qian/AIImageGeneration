@@ -1,11 +1,13 @@
-import sqlite3
-import re  # Used for SQL sanitization
-
 '''
 This SQL Manager file is designed to control many different SQL tables. Each correspond to 1 Python class (let's call each X).
 I will design it so that each X.py imports this SQL Manager, not the other way around. To prevent circular import and make the design modular.
-Thus, this file will only have non table specific functions, besides functions to create tables.
+Thus, this file only has non table specific functions, besides functions to create tables.
 '''
+
+
+import sqlite3
+import re  # Used for SQL sanitization
+
 
 class SQLite_Manager:
     def __init__(self):
@@ -31,55 +33,65 @@ class SQLite_Manager:
         try:
             # Sanitize all
             if not SQLite_Manager.isEnglishORNum(tableName):
-                return False
+                return SQLResponse(False)
             
             placeholders = ', '.join(['?'] * len(args))
             command = f"INSERT INTO {tableName} VALUES ({placeholders})"
             self.cursor.execute(command, args)
             self.conn.commit()
-            return True
+            return SQLResponse(True)
         except Exception as e:
-            return False
+            return SQLResponse(False)
     
     
     def getRow(self, tableName: str, column: str, value: str):
         try:
             # Sanizie all
             if not SQLite_Manager.isEnglishORNum(tableName) or not SQLite_Manager.isEnglishORNum(column) or not SQLite_Manager.isEnglishORNum(value):
-                return False
+                return SQLResponse(False)
 
             query = f"SELECT * FROM {tableName} WHERE {column} = ?"
             self.cursor.execute(query, (value,))
             results = self.cursor.fetchall()
 
             if len(results) == 0:
-                return False
+                return SQLResponse(False)
 
-            # DEBUG
-            for x in results:
-                print(x)
-            return True
+            list = []
+            for row in results:
+                # There is only 1 row.
+                for value in row:
+                    list.append(value)
+            return SQLResponse(True, list)
         except Exception as e:
-            return False
+            return SQLResponse(False)
     
     def getAllRows(self, tableName: str):
         try:
             # Sanizie tableName, column, and value
             if not SQLite_Manager.isEnglishORNum(tableName):
-                return False
+                return SQLResponse(False)
 
             query = f"SELECT * FROM {tableName}"
             self.cursor.execute(query)
             results = self.cursor.fetchall()
 
             if len(results) == 0:
-                return False
+                return SQLResponse(False)
 
-            # DEBUG
-            for x in results:
-                print(x)
-            return True
+            list = []
+            for row in results:
+                list2 = []
+                for value in row:
+                    list2.append(value)
+                list.append(list2)
+            return SQLResponse(True, list)
         except Exception as e:
-            return False
+            return SQLResponse(False)
     
 
+class SQLResponse:
+    def __init__(self, success: bool, list: list = [], message: str = "None"):
+        self.success = success
+        self.list = list
+        self.message = message
