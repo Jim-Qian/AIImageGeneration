@@ -1,6 +1,6 @@
 import sqlite3
 
-import User
+from DB.User import User
 
 class SQLite_Manager:
     def __init__(self):

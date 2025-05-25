@@ -1,14 +1,14 @@
 
-import SQLite_Manager
+from DB.SQLite_Manager import SQLite_Manager
 
 class User:
-    def __init__(self, username):
+    def __init__(self, username, password, balance, isAdmin):
         self.username = username
-        self.password = ""
-        self.balance = 0
-        self.isAdmin = False
+        self.password = password
+        self.balance = balance
+        self.isAdmin = isAdmin
 
-    def insertIntoDB(self, sqlManager):
+    def insertIntoDB(self, sqlManager: SQLite_Manager):
         sqlManager.insertNewUserIntoDB(self.username, 
                                         self.password, 
                                         self.balance, 
