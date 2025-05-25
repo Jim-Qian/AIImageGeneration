@@ -11,5 +11,5 @@ sqlManager.createUsersTable()
 user1 = User("Jim", "AdminJim2025Admin", 100, True)
 sqlManager.insertNewUserIntoDB(user1.username, user1.password, user1.balance, user1.isAdmin)
 
-# admin = sqlManager.
+sqlManager.getARowFromTable("Users", "username", "Jim")
 pass

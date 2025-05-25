@@ -15,7 +15,7 @@ Create a generic SELECT function
 
 class SQLite_Manager:
     def __init__(self):
-        self.conn = sqlite3.connect('Users.db')
+        self.conn = sqlite3.connect('Backend/DB/Users.db')
         self.cursor = self.conn.cursor()
 
     def createUsersTable(self):
@@ -33,12 +33,26 @@ class SQLite_Manager:
         # DEBUG
         # Need to sanitize username and password
 
-        isAdminString = 'True' if isAdmin else 'False'
-        self.cursor.execute('''
-            INSERT INTO Users (username, password, balance, isAdmin) VALUES (?, ?, ?, ?)
-        ''', (username, password, balance, isAdminString))
-        self.conn.commit()
+        try:
+            # Will throw an error if username already exists
+            isAdminString = 'True' if isAdmin else 'False'
+            self.cursor.execute('''
+                INSERT INTO Users (username, password, balance, isAdmin) VALUES (?, ?, ?, ?)
+            ''', (username, password, balance, isAdminString))
+            self.conn.commit()
+        except:
+            pass
     
+    def getARowFromTable(self, tableName: str, column: str, value: str):
+        # DEBUG
+        # Need to sanizie tableName and column
+
+        query = f"SELECT * FROM {tableName} WHERE {column} = ?"
+        self.cursor.execute(query, (value,))
+        results = self.cursor.fetchall()
+        for x in results:
+            print(x)
+        pass
     # DEBUG
     # def getExistingUserFromDB(username):
     #     username = ""
