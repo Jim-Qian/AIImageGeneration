@@ -7,9 +7,12 @@ from DB.User import User
 
 
 sqlManager = SQLite_Manager() 
+
 sqlManager.createUsersTable()
 user1 = User("Jim", "AdminJim2025Admin", 100, True)
-sqlManager.insertNewUserIntoDB(user1.username, user1.password, user1.balance, user1.isAdmin)
+user1.insertIntoDB(sqlManager)
+user2 = User("Guest", "Guest", 0, False)
+user2.insertIntoDB(sqlManager)
 
-sqlManager.getARowFromTable("Users", "username", "Jim")
+sqlManager.getAllRows("Users")
 pass

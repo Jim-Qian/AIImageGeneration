@@ -9,14 +9,12 @@ class User:
         self.isAdmin = isAdmin
 
     def insertIntoDB(self, sqlManager: SQLite_Manager):
-        sqlManager.insertNewUserIntoDB(self.username, 
-                                        self.password, 
-                                        self.balance, 
-                                        self.isAdmin)
+        _isAdmin = True if self.isAdmin else False
+        sqlManager.insertARow("Users", 
+                              self.username, self.password, self.balance, _isAdmin)
         
     def generateImage(self, prompt):
         self.balance -= 0.05
-        # DEBUG
         pass
 
     
