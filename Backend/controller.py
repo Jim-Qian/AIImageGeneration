@@ -1,11 +1,14 @@
 '''
 Currently, this does not use password hashing.
+
+This initial version of controller.py does not use HTML, CSS, or Javascript files.
+Flask functions return text HTML directly.
+It also only has only 3 frontend pages: /, /register, and /login.
 '''
 
 
 from flask import Flask, request, redirect, session, render_template_string
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
 
 from DB.SQLite_Manager import SQLite_Manager
 from DB.SQLite_Manager import SQLResponse

@@ -1,3 +1,7 @@
+'''
+For debugging only.
+'''
+
 from DB.SQLite_Manager import SQLite_Manager
 from DB.User import User
 
