@@ -5,13 +5,16 @@ Thus, this file only has non table specific functions, besides functions to crea
 '''
 
 
+import os
 import sqlite3
 import re  # Used for SQL sanitization
 
 
 class SQLite_Manager:
     def __init__(self):
-        self.conn = sqlite3.connect('Backend/DB/Users.db')
+        # Using absolute path is error-prone.
+        db_path = os.path.join(os.path.dirname(__file__), 'Users.db')
+        self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
 
     def createUsersTable(self):

@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -15,7 +15,12 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,30 +35,81 @@ export default function Login() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      console.log("Frontend: Attempting to login with:", { username })
+
+      // Use Next.js API route (NOT direct Flask call)
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
-        credentials: "include", // Important for cookies/session
       })
 
+      console.log("Frontend: Response status:", response.status)
+      console.log("Frontend: Response ok:", response.ok)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error("Frontend: Error response:", errorData)
+        setError(errorData.message || `Server error: ${response.status}`)
+        setIsLoading(false)
+        return
+      }
+
       const data = await response.json()
+      console.log("Frontend: Response data:", data)
 
       if (data.status === "success") {
-        // Store user info in localStorage for frontend state
-        localStorage.setItem("user", JSON.stringify(data.user))
-        router.push("/user")
+        console.log("Frontend: Login successful, storing user and redirecting")
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user", JSON.stringify(data.user))
+          console.log("Frontend: User stored in localStorage:", data.user)
+        }
+
+        // Add a small delay to ensure localStorage is set
+        setTimeout(() => {
+          router.push("/user")
+        }, 100)
       } else {
+        console.error("Frontend: Login failed:", data.message)
         setError(data.message || "Login failed")
       }
     } catch (err) {
-      setError("Network error. Please try again.")
-      console.error(err)
+      console.error("Frontend: Fetch error:", err)
+
+      if (err instanceof Error) {
+        if (err.message.includes("Failed to fetch")) {
+          setError("Cannot connect to server. Please try again later.")
+        } else {
+          setError(`Network error: ${err.message}`)
+        }
+      } else {
+        setError("An unexpected error occurred")
+      }
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+        <div className="w-full max-w-md bg-gray-50 p-8 rounded-lg shadow-sm">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded mb-6"></div>
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

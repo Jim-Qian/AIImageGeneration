@@ -9,26 +9,39 @@ import { User } from "lucide-react"
 export default function UserPage() {
   const [username, setUsername] = useState("")
   const [isLoading, setIsLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
     async function checkAuth() {
       try {
-        const response = await fetch("http://localhost:5000/api/check-auth", {
-          credentials: "include", // Important for cookies/session
-        })
+        console.log("User page: Checking authentication")
+
+        // Use Next.js API route (NOT direct Flask call)
+        const response = await fetch("/api/check-auth")
+        console.log("User page: Auth check response status:", response.status)
 
         const data = await response.json()
+        console.log("User page: Auth check response data:", data)
 
-        if (data.authenticated) {
+        if (data.authenticated && data.user) {
+          console.log("User page: User is authenticated:", data.user.username)
           setUsername(data.user.username)
-          // Update local storage
-          localStorage.setItem("user", JSON.stringify(data.user))
+          if (typeof window !== "undefined") {
+            localStorage.setItem("user", JSON.stringify(data.user))
+          }
         } else {
+          console.log("User page: User is not authenticated, redirecting to login")
           router.push("/login")
         }
       } catch (err) {
-        console.error("Error checking authentication:", err)
+        console.error("User page: Error checking authentication:", err)
         router.push("/login")
       } finally {
         setIsLoading(false)
@@ -36,24 +49,44 @@ export default function UserPage() {
     }
 
     checkAuth()
-  }, [router])
+  }, [router, mounted])
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/api/logout", {
-        credentials: "include",
-      })
-      localStorage.removeItem("user")
+      console.log("User page: Logging out")
+      // Use Next.js API route (NOT direct Flask call)
+      await fetch("/api/logout")
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user")
+      }
       router.push("/")
     } catch (err) {
       console.error("Error during logout:", err)
     }
   }
 
-  if (isLoading) {
+  if (!mounted || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
+      <div className="min-h-screen bg-white flex flex-col">
+        <header className="w-full h-16 border-b border-gray-200 flex items-center px-6">
+          <div className="flex-1">
+            <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
+          </div>
+          <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+        </header>
+        <div className="flex-1 flex">
+          <aside className="w-1/5 bg-gray-50 border-r border-gray-200 p-4">
+            <div className="space-y-2">
+              <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </aside>
+          <main className="flex-1 p-6">
+            <div className="h-8 bg-gray-200 rounded w-64 mb-6 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+          </main>
+        </div>
       </div>
     )
   }
@@ -82,7 +115,6 @@ export default function UserPage() {
       </header>
 
       <div className="flex-1 flex">
-        {/* Sidebar - 20% width */}
         <aside className="w-1/5 bg-gray-50 border-r border-gray-200 p-4">
           <nav className="space-y-2">
             <div className="px-3 py-2 rounded-md bg-gray-100 font-medium">Dashboard</div>
@@ -91,7 +123,6 @@ export default function UserPage() {
           </nav>
         </aside>
 
-        {/* Main content area */}
         <main className="flex-1 p-6">
           <h2 className="text-2xl font-bold mb-6">Welcome, {username}!</h2>
           <p className="text-gray-600">

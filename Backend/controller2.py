@@ -31,7 +31,27 @@ def getSQLManager():
 # ----------------------------------------------------------------------------------------------------
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+# CORS(app, 
+#      origins=["http://localhost:3000", "http://localhost:5000", "http://127.0.0.1:5000", " http://127.0.0.1:3000"],  # Allow requests from Next.js (localhost:3000) and browser to view JSON (localhost:5000)
+#      supports_credentials=True,          # Allow cookies/sessions
+#      allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+#      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+#      expose_headers=["Content-Type", "Authorization"],
+#      max_age=600
+# )
+# CORS(app, 
+#      resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:5000", "http://127.0.0.1:3000", "http://127.0.0.1:5000"]}},
+#      supports_credentials=True,
+#      allow_headers=["Content-Type", "Authorization"],
+#      methods=["GET", "POST", "OPTIONS"])
+# CORS(app,
+#      origins=["http://localhost:3000", "http://localhost:5000"],
+#      supports_credentials=True,
+#      allow_headers=["Content-Type", "Authorization"],
+#      methods=["GET", "POST", "OPTIONS"])
+CORS(app,
+     origins=["http://localhost:3000", "http://localhost:5000"],
+     supports_credentials=True)
 # DEBUG  Use a secure, random key in production
 app.secret_key = 'your-secret-key'
 # DEBUG
@@ -41,13 +61,18 @@ Session(app)
 
 @app.route('/')
 def home():
-    return jsonify({"status": "success", 
+    return jsonify({"status": "success",
                     "message": "Welcome to the API"})
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/api/login', methods=['POST', 'OPTIONS'])
 def login():
-    if request.method == 'POST':
+    if request.method == 'OPTIONS':  # Handle preflight request
+        response = jsonify({'status': 'success'})
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        return response
+    elif request.method == 'POST':
         data = request.get_json()  # Get JSON data instead of form data
         username = data.get('username')
         password = data.get('password')
@@ -68,10 +93,17 @@ def login():
         else:
             return jsonify({"status": "error", 
                             "message": "Invalid password"})
+    else:
+        return jsonify({"status": "error", "message": "Method not allowed"}), 405
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/api/register', methods=['POST', 'OPTIONS'])
 def register():
+    if request.method == 'OPTIONS':  # Handle preflight request
+        response = jsonify({'status': 'success'})
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        return response
     if request.method == 'POST':
         data = request.get_json()  # Get JSON data instead of form data
         username = data.get('username')
@@ -91,8 +123,10 @@ def register():
         else:
             return jsonify({"status": "error", 
                             "message": "Username already taken"})
+    else:
+        return jsonify({"status": "error", "message": "Method not allowed"}), 405
 
-@app.route('/user', methods=['GET', 'POST'])
+@app.route('/api/user', methods=['GET'])
 def user():
     if 'username' not in session:
         return jsonify({"status": "error",
@@ -103,7 +137,7 @@ def user():
     })
 
 
-@app.route('/logout')
+@app.route('/api/logout')
 def logout():
     session.clear()
     return jsonify({"status": "success",

@@ -8,9 +8,11 @@ flask_session/
 
 # dependencies
 node_modules/
-# next.js
-/.next/
-/out/
+
+# next.js build artifacts
+.next/
+out/
+
 # production
 /build
 # debug
