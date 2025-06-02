@@ -2,7 +2,7 @@
 
 export async function checkAuthStatus() {
   try {
-    const response = await fetch("http://localhost:5000/api/check-auth", {
+    const response = await fetch("/api/check-auth", {
       credentials: "include",
     })
 
@@ -19,7 +19,7 @@ export async function checkAuthStatus() {
 
 export async function logout() {
   try {
-    await fetch("http://localhost:5000/api/logout", {
+    await fetch("/api/logout", {
       credentials: "include",
     })
     localStorage.removeItem("user")
