@@ -31,24 +31,6 @@ def getSQLManager():
 # ----------------------------------------------------------------------------------------------------
 
 app = Flask(__name__)
-# CORS(app, 
-#      origins=["http://localhost:3000", "http://localhost:5000", "http://127.0.0.1:5000", " http://127.0.0.1:3000"],  # Allow requests from Next.js (localhost:3000) and browser to view JSON (localhost:5000)
-#      supports_credentials=True,          # Allow cookies/sessions
-#      allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
-#      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-#      expose_headers=["Content-Type", "Authorization"],
-#      max_age=600
-# )
-# CORS(app, 
-#      resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:5000", "http://127.0.0.1:3000", "http://127.0.0.1:5000"]}},
-#      supports_credentials=True,
-#      allow_headers=["Content-Type", "Authorization"],
-#      methods=["GET", "POST", "OPTIONS"])
-# CORS(app,
-#      origins=["http://localhost:3000", "http://localhost:5000"],
-#      supports_credentials=True,
-#      allow_headers=["Content-Type", "Authorization"],
-#      methods=["GET", "POST", "OPTIONS"])
 CORS(app,
      origins=["http://localhost:3000", "http://localhost:5000"],
      supports_credentials=True)
