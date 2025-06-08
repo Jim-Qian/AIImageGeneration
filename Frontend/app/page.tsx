@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
@@ -9,12 +8,13 @@ export default function Home() {
           <h1 className="text-xl font-semibold">My Website</h1>
         </div>
         <div className="flex gap-4">
-          <Link href="/register">
+          {/* Try using href instead of Link temporarily */}
+          <a href="/register">
             <Button variant="outline">Register</Button>
-          </Link>
-          <Link href="/login">
+          </a>
+          <a href="/login">
             <Button>Login</Button>
-          </Link>
+          </a>
         </div>
       </header>
 
@@ -25,14 +25,15 @@ export default function Home() {
             This is the home page of our application. Please register or login to access your user dashboard.
           </p>
           <div className="flex gap-4 justify-center">
-            <Link href="/register">
+            {/* Try regular anchor tags */}
+            <a href="/register">
               <Button variant="outline" size="lg">
                 Create an account
               </Button>
-            </Link>
-            <Link href="/login">
+            </a>
+            <a href="/login">
               <Button size="lg">Sign in</Button>
-            </Link>
+            </a>
           </div>
         </div>
       </main>
