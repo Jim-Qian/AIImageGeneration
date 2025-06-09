@@ -15,9 +15,11 @@ Now each Flask function returns JSON instead of template HTML.
 '''
 
 
+import os, json
 from flask import Flask, jsonify, request, redirect, url_for, session, render_template
 from flask_session import Session
 from flask_cors import CORS
+import redis
 
 from DB.SQLite_Manager import SQLite_Manager
 from DB.SQLite_Manager import SQLResponse
@@ -29,15 +31,27 @@ def getSQLManager():
     return manager
 
 # ----------------------------------------------------------------------------------------------------
+# Read secrets
+script_dir = os.path.dirname(__file__)
+secret_path = os.path.abspath(os.path.join(script_dir, "secrets.json"))
+with open(secret_path, "r") as f:
+    secrets = json.load(f)
 
+# Create the Flask Server and set its CORS policy
 app = Flask(__name__)
 CORS(app,
-     origins=["http://localhost:3000", "http://localhost:5000"],
      supports_credentials=True)
-# DEBUG  Use a secure, random key in production
-app.secret_key = 'your-secret-key'
+
+# Set Flask Server's secret key
+app.secret_key = secrets.get("Flask_SecretKey")
+
 # DEBUG
+# Session  No longer using file system:
 app.config['SESSION_TYPE'] = 'filesystem'
+# app.config["SESSION_TYPE"] = "redis"
+# app.config["SESSION_REDIS"] = redis.Redis(host=secrets.get("Backend_Server_URL_WithoutPort"), port=6379, db=0)
+# app.config["SESSION_PERMANENT"] = False  # Make session non-permanent. Valid until browser is closed.
+# app.config["SESSION_USE_SIGNER"] = True  # Adds security with signed cookies
 Session(app)
 
 
