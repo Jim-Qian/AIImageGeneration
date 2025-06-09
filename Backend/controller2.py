@@ -46,12 +46,11 @@ CORS(app,
 app.secret_key = secrets.get("Flask_SecretKey")
 
 # DEBUG
-# Session  No longer using file system:
-app.config['SESSION_TYPE'] = 'filesystem'
-# app.config["SESSION_TYPE"] = "redis"
-# app.config["SESSION_REDIS"] = redis.Redis(host=secrets.get("Backend_Server_URL_WithoutPort"), port=6379, db=0)
-# app.config["SESSION_PERMANENT"] = False  # Make session non-permanent. Valid until browser is closed.
-# app.config["SESSION_USE_SIGNER"] = True  # Adds security with signed cookies
+# Session  No longer using file system:  app.config['SESSION_TYPE'] = 'filesystem'
+app.config["SESSION_TYPE"] = "redis"
+app.config["SESSION_REDIS"] = redis.Redis(secrets.get("Redis_Server_URL_NoPort"), port=secrets.get("Redis_Server_Port"), db=0)
+app.config["SESSION_PERMANENT"] = False  # Make session non-permanent. Valid until browser is closed.
+app.config["SESSION_USE_SIGNER"] = True  # Adds security with signed cookies
 Session(app)
 
 
