@@ -2,10 +2,11 @@
 __pycache__/
 .DS_Store
 secrets.json
-
-# Frontend -------------------------------------------------
 # session
 flask_session/
+*.rdb
+
+# Frontend -------------------------------------------------
 
 # dependencies
 node_modules/
