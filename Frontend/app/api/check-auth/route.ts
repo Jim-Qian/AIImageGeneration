@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import secrets from '../../../secrets.json';
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Forward the request to Flask with cookies
-    const flaskResponse = await fetch("http://127.0.0.1:5000/api/check-auth", {
+    const flaskResponse = await fetch(`${secrets.Backend_Server_URL}/api/check-auth`, {
       method: "GET",
       headers,
     })

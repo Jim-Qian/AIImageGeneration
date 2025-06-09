@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import secrets from '../../../secrets.json';
 
 export async function POST(request: NextRequest) {
   try {
@@ -6,7 +7,7 @@ export async function POST(request: NextRequest) {
     console.log("Next.js API: Received register request for:", body.username)
 
     // Forward the request to Flask
-    const flaskResponse = await fetch("http://127.0.0.1:5000/api/register", {
+    const flaskResponse = await fetch(`${secrets.Backend_Server_URL}/api/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
