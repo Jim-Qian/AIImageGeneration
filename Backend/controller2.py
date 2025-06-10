@@ -53,6 +53,7 @@ app.config["SESSION_PERMANENT"] = False  # Make session non-permanent. Valid unt
 app.config["SESSION_USE_SIGNER"] = True  # Adds security with signed cookies
 Session(app)
 
+# Basic Routes ----------------------------------------------------------------------------------------------------
 
 @app.route('/')
 def home():
@@ -126,6 +127,13 @@ def user():
     if 'username' not in session:
         return jsonify({"status": "error",
                         "message": "Not authenticated"}), 401
+    
+    manager = getSQLManager()
+    user = User.getFromDB(manager, session["username"])
+    if user == None:
+        return jsonify({"status": "error",
+                        "message": "The user has already been deleted from DB"}), 410
+
     return jsonify({
         "status": "success",
         "user": {"username": session['username']}
@@ -142,17 +150,100 @@ def logout():
 # Add a route to check authentication status
 @app.route('/api/check-auth')
 def check_auth():
-    if 'username' in session:
-        return jsonify({
-            "status": "success",
-            "authenticated": True,
-            "user": {"username": session['username']}
-        })
+    if 'username' not in session:
+        return jsonify({"status": "error",
+                        "authenticated": False,
+                        "message": "Not authenticated"}), 401
+    
+    manager = getSQLManager()
+    user = User.getFromDB(manager, session["username"])
+    if user == None:
+        return jsonify({"status": "error",
+                        "authenticated": False,
+                        "message": "The user has already been deleted from DB"}), 410
+
+    return jsonify({
+        "status": "success",
+        "authenticated": True,
+        "user": {"username": session['username']}
+    })
+
+    
+# Other Routes ----------------------------------------------------------------------------------------------------
+
+
+@app.route('/api/getBalance', methods=['GET'])
+def getBalance():
+    if 'username' not in session:
+        return jsonify({"status": "error",
+                        "message": "Not authenticated"}), 401
+    
+    balance = -1
+    # DEBUG
+    
+    return jsonify({
+        "status": "success",
+        "balance": balance
+    })
+
+@app.route('/api/deductUnitCostOfBalance', methods=['GET'])
+def deductUnitCostOfBalance():
+    if 'username' not in session:
+        return jsonify({"status": "error",
+                        "message": "Not authenticated"}), 401
+    
+    balance = -1
+    # DEBUG
+    
+    return jsonify({
+        "status": "success",
+        "balance": balance
+    })
+
+@app.route('/api/getUnitCost', methods=['GET'])
+def getUnitCost():
+    unitCost = -1
+    # DEBUG
+    
+    return jsonify({
+        "status": "success",
+        "unitCost": unitCost
+    })
+
+@app.route('/api/sendAIImageGenerationRequest', methods=['POST', 'OPTIONS'])
+def sendAIImageGenerationRequest():
+    if request.method == 'OPTIONS':  # Handle preflight request
+        response = jsonify({'status': 'success'})
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        return response
+    if request.method == 'POST':
+        if 'username' not in session:
+            return jsonify({"status": "error",
+                            "message": "Not authenticated"}), 401
+
+        data = request.get_json()  # Get JSON data instead of form data
+        username = data.get('username')
+        password = data.get('password')
+
+        manager = getSQLManager()
+        newUser = User(username, password, 0)
+        isSuccessful = newUser.insertIntoDB(manager)
+
+        if isSuccessful:
+            session['username'] = username  # Auto-login after registration
+            return jsonify({
+                "status": "success", 
+                "message": "Registered successfully",
+                "user": {"username": username}
+            })
+        else:
+            return jsonify({"status": "error", 
+                            "message": "Username already taken"})
     else:
-        return jsonify({
-            "status": "success",
-            "authenticated": False
-        })
+        return jsonify({"status": "error", "message": "Method not allowed"}), 405
+
+# ----------------------------------------------------------------------------------------------------
     
 # DEBUG
 if __name__ == "__main__":
