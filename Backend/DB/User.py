@@ -10,15 +10,8 @@ class User:
         self.password = password
         self.balance = balance
         self.isAdmin = False  # Make this into a separate setter so don't accidentally grant admin. Also will make it simplier to search for all the references for the setter.
-
-    def makeAdmin(self):
-        self.isAdmin = True
-
-    def insertIntoDB(self, sqlManager: SQLite_Manager):
-        response = sqlManager.insertARow("Users", 
-                              self.username, self.password, self.balance, self.isAdmin)
-        return response.success
     
+    # Get from DB ----------------------------------------------------------------------
     def getFromDB(sqlManager: SQLite_Manager, username: str) -> User:
         response = sqlManager.getRow("Users",
                           "username", username)
@@ -29,9 +22,22 @@ class User:
             user.makeAdmin()
         return user
     
+    # Set to DB ----------------------------------------------------------------------
+    def insertIntoDB(self, sqlManager: SQLite_Manager):
+        response = sqlManager.insertARow("Users", 
+                              self.username, self.password, self.balance, self.isAdmin)
+        return response.success
+
+    def makeAdmin(self):
+        self.isAdmin = True
+
+    def changeBalance(self, newBalance: float):
+        self.balance = newBalance
+    
+    # Miscellaneous functions ---------------------------------------------------------
+    def generateImage(self, prompt):
         
-    # def generateImage(self, prompt):
-    #     self.balance -= 0.05
-    #     pass
+        self.balance -= 0.05
+        pass
 
     

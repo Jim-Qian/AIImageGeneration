@@ -24,6 +24,7 @@ import redis
 from DB.SQLite_Manager import SQLite_Manager
 from DB.SQLite_Manager import SQLResponse
 from DB.User import User
+from APIs import OpenAI_Client
 
 
 def getSQLManager():
@@ -75,7 +76,6 @@ def login():
 
         manager = getSQLManager()
         user = User.getFromDB(manager, username)
-
         if user == None:
             return jsonify({"status": "error", 
                             "message": "User not found"})
@@ -127,7 +127,6 @@ def user():
     if 'username' not in session:
         return jsonify({"status": "error",
                         "message": "Not authenticated"}), 401
-    
     manager = getSQLManager()
     user = User.getFromDB(manager, session["username"])
     if user == None:
@@ -154,7 +153,6 @@ def check_auth():
         return jsonify({"status": "error",
                         "authenticated": False,
                         "message": "Not authenticated"}), 401
-    
     manager = getSQLManager()
     user = User.getFromDB(manager, session["username"])
     if user == None:
@@ -177,33 +175,23 @@ def getBalance():
     if 'username' not in session:
         return jsonify({"status": "error",
                         "message": "Not authenticated"}), 401
+    manager = getSQLManager()
+    user = User.getFromDB(manager, session["username"])
+    if user == None:
+        return jsonify({"status": "error",
+                        "message": "The user has already been deleted from DB"}), 410
     
-    balance = -1
-    # DEBUG
+    balance = user.balance
     
     return jsonify({
         "status": "success",
         "balance": balance
     })
 
-@app.route('/api/deductUnitCostOfBalance', methods=['GET'])
-def deductUnitCostOfBalance():
-    if 'username' not in session:
-        return jsonify({"status": "error",
-                        "message": "Not authenticated"}), 401
-    
-    balance = -1
-    # DEBUG
-    
-    return jsonify({
-        "status": "success",
-        "balance": balance
-    })
 
 @app.route('/api/getUnitCost', methods=['GET'])
 def getUnitCost():
-    unitCost = -1
-    # DEBUG
+    unitCost = secrets.get("User_UnitCost")
     
     return jsonify({
         "status": "success",
@@ -221,27 +209,38 @@ def sendAIImageGenerationRequest():
         if 'username' not in session:
             return jsonify({"status": "error",
                             "message": "Not authenticated"}), 401
-
-        data = request.get_json()  # Get JSON data instead of form data
-        username = data.get('username')
-        password = data.get('password')
-
         manager = getSQLManager()
-        newUser = User(username, password, 0)
-        isSuccessful = newUser.insertIntoDB(manager)
+        user = User.getFromDB(manager, session["username"])
+        if user == None:
+            return jsonify({"status": "error",
+                            "authenticated": False,
+                            "message": "The user has already been deleted from DB"}), 410
 
-        if isSuccessful:
-            session['username'] = username  # Auto-login after registration
+        data = request.get_json()
+        size1 = data.get('size1')
+        size2 = data.get('size2')
+        prompt = data.get('prompt')
+
+        if (not isinstance(size1, int) or not isinstance(size2, int) or 
+            size1 > 2000 or size2 > 2000 or size1 <= 0 or size2 <= 0 or 
+            not isinstance(prompt, str) or prompt == ""):
+            return jsonify({"status": "error", 
+                            "message": "Generation failed because of bad input"})
+
+        url = OpenAI_Client.generate(prompt, size1, size2)
+
+        if url != None:
             return jsonify({
                 "status": "success", 
-                "message": "Registered successfully",
-                "user": {"username": username}
+                "message": "Generation successful",
+                "url": url
             })
         else:
             return jsonify({"status": "error", 
-                            "message": "Username already taken"})
+                            "message": "Generation failed"})
     else:
-        return jsonify({"status": "error", "message": "Method not allowed"}), 405
+        return jsonify({"status": "error",
+                        "message": "Method not allowed"}), 405
 
 # ----------------------------------------------------------------------------------------------------
     

@@ -21,7 +21,7 @@ def testSQLManager():
     pass
 
 def testOpenAIClient():
-    OpenAI_Client.test()
+    # OpenAI_Client.generate("UFO", 100, 100)
     pass
 
 testOpenAIClient()
