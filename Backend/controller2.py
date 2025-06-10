@@ -228,6 +228,9 @@ def sendAIImageGenerationRequest():
                             "message": "Generation failed because of bad input"})
 
         url = OpenAI_Client.generate(prompt, size1, size2)
+        # Even if generation failed, still gonna deduct. Maybe use a more complex pricing scheme in the future.
+        unitCost = secrets.get("User_UnitCost")
+        user.changeBalance(user.balance - unitCost)
 
         if url != None:
             return jsonify({

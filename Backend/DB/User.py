@@ -35,9 +35,5 @@ class User:
         self.balance = newBalance
     
     # Miscellaneous functions ---------------------------------------------------------
-    def generateImage(self, prompt):
-        
-        self.balance -= 0.05
-        pass
 
     
