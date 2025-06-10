@@ -46,7 +46,6 @@ CORS(app,
 # Set Flask Server's secret key
 app.secret_key = secrets.get("Flask_SecretKey")
 
-# DEBUG
 # Session  No longer using file system:  app.config['SESSION_TYPE'] = 'filesystem'
 app.config["SESSION_TYPE"] = "redis"
 app.config["SESSION_REDIS"] = redis.Redis(secrets.get("Redis_Server_URL_NoPort"), port=secrets.get("Redis_Server_Port"), db=0)
@@ -230,7 +229,7 @@ def sendAIImageGenerationRequest():
         url = OpenAI_Client.generate(prompt, size1, size2)
         # Even if generation failed, still gonna deduct. Maybe use a more complex pricing scheme in the future.
         unitCost = secrets.get("User_UnitCost")
-        user.changeBalance(user.balance - unitCost)
+        user.changeBalance(manager, user.balance - unitCost)
 
         if url != None:
             return jsonify({

@@ -28,10 +28,16 @@ class User:
                               self.username, self.password, self.balance, self.isAdmin)
         return response.success
 
-    def makeAdmin(self):
+    def makeAdmin(self, sqlManager: SQLite_Manager = None):
+        if sqlManager != None:
+            sqlManager.setRowSingleValue("Users",
+                                        "username", self.username, "isAdmin", True)
         self.isAdmin = True
 
-    def changeBalance(self, newBalance: float):
+    def changeBalance(self, sqlManager: SQLite_Manager, newBalance: float = None):
+        if sqlManager != None:
+            sqlManager.setRowSingleValue("Users",
+                                         "username", self.username, "balance", newBalance)
         self.balance = newBalance
     
     # Miscellaneous functions ---------------------------------------------------------

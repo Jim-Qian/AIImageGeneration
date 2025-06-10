@@ -1,24 +1,24 @@
-// Use the top one to run Node for the Next.js Server. Use the bottom one to test Python and Flask code.
+// Use the top one to run Node for the Next.js Server. Use the middle one to test (non-Flask) Python code. Use the bottom one to test Flask code.
 
 // Next.js Server in VS Code. Not needed if running in command line.
-{
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "type": "node",
-        "request": "launch",
-        "name": "Next.js: debug server",
-        "runtimeExecutable": "npm",
-        "runtimeArgs": ["run", "dev"],
-        "cwd": "${workspaceFolder}/Frontend",  // Tell VS Code debugger to go to Frontend (instead of the default root project folder), which contains package.json
-        "port": 9229,  // The "port": 9229 in launch.json is not the port your app runs on (like 3000 or 5000) — it's the Node.js debugger port, which VS Code uses to connect to your app's debugging session. This is unrelated to your Flask or Next.js HTTP server ports.
-        "console": "integratedTerminal",
-        "skipFiles": ["<node_internals>/**"]
-      }
-    ]
-  }
+// {
+//     "version": "0.2.0",
+//     "configurations": [
+//       {
+//         "type": "node",
+//         "request": "launch",
+//         "name": "Next.js: debug server",
+//         "runtimeExecutable": "npm",
+//         "runtimeArgs": ["run", "dev"],
+//         "cwd": "${workspaceFolder}/Frontend",  // Tell VS Code debugger to go to Frontend (instead of the default root project folder), which contains package.json
+//         "port": 9229,  // The "port": 9229 in launch.json is not the port your app runs on (like 3000 or 5000) — it's the Node.js debugger port, which VS Code uses to connect to your app's debugging session. This is unrelated to your Flask or Next.js HTTP server ports.
+//         "console": "integratedTerminal",
+//         "skipFiles": ["<node_internals>/**"]
+//       }
+//     ]
+//   }
 
-// Flask/Python in VS Code.
+// Python in VS Code.
 // {
 //   "version": "0.2.0",
 //   "configurations": [
@@ -32,3 +32,26 @@
 //     }
 //   ]
 // }
+
+// Flask in VS Code.
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Flask",
+      "type": "python",
+      "request": "launch",
+      "module": "flask",
+      "env": {
+        "FLASK_APP": "Backend/controller2.py",
+        "FLASK_ENV": "development",
+        "PYTHONPATH": "${workspaceFolder}/Backend"
+      },
+      "args": [
+        "run",
+        "--host=localhost"
+      ],
+      "jinja": true
+    }
+  ]
+}

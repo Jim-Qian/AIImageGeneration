@@ -92,6 +92,27 @@ class SQLite_Manager:
         except Exception as e:
             return SQLResponse(False)
     
+    # Finds the row using column and value. Then sets that row's column2 to be value2. value2 can be str, int, or bool.
+    def setRowSingleValue(self, tableName: str, column: str, value: str, column2: str, value2):
+        try:
+            # Sanitize inputs
+            if not SQLite_Manager.isEnglishORNum(tableName) or \
+            not SQLite_Manager.isEnglishORNum(column) or \
+            not SQLite_Manager.isEnglishORNum(column2) or \
+            not SQLite_Manager.isEnglishORNum(value):
+                return SQLResponse(False)
+
+            query = f"UPDATE {tableName} SET {column2} = ? WHERE {column} = ?"
+            self.cursor.execute(query, (value2, value))
+            self.conn.commit()
+
+            if self.cursor.rowcount == 0:
+                return SQLResponse(False)
+
+            return SQLResponse(True)
+        except Exception as e:
+            return SQLResponse(False)
+    
 
 class SQLResponse:
     def __init__(self, success: bool, list: list = [], message: str = "None"):
