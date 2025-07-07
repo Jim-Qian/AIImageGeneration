@@ -1,105 +1,102 @@
-                                                     **Summary**
-													 
-**Steps for starting this website (no debugging locally):**
-source env/bin/activate                                                ->  Enable local Python environment
+**Steps for starting this website (no debugging locally):**  
+source env/bin/activate                                                ->  Enable local Python environment  
 
-Backend/npm run dev                                                    ->  Runs Frontend
-Backend/redis-server                                                   ->  Runs Redis Server
-PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs Backend (use this command directly in project folder)
-                                                                       
+Backend/npm run dev                                                    ->  Runs Frontend  
+Backend/redis-server                                                   ->  Runs Redis Server  
+PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs Backend (use this command directly in project folder)                                   
 
-**Steps for starting this website (debugging locally):**
-1. Same as above do for all parts you are not debugging.
-2. Comment out all portions except the 1 you are debugging in ".vscode/launch.json".
-3. Start VS Code.
+**Steps for starting this website (debugging locally):**  
+1. Same as above do for all parts you are not debugging.  
+2. Comment out all portions except the 1 you are debugging in ".vscode/launch.json".  
+3. Start VS Code.  
 
 
-**Steps on how this website works (localhost):**
-	1.	Browser goes to localhost:3000. Gets served generated HTML and CSS and Javascript built from ts, tsx, and css by Next.js.
-	2.	When browser clicks on a button, for example "Login", the browser sends a JSON POST request to ( localhost:3000/api/login ) (along with any cookie), which then triggers the Next.js server to send a request to ( localhost:5000 ).
-	⁃	The browser never directly communicates with Flask - it always goes through the Next.js proxy first.
-	3.	Flask sends a response back to :3000 to the Next.js server, not to the browser directly. Then Next.js server sends to the browser (including any cookie).
-Browser never talk directly with :5000.
+**Steps on how this website works (localhost):**  
+1. Browser goes to localhost:3000. Gets served generated HTML and CSS and Javascript built from ts, tsx, and css by Next.js.  
+2. When browser clicks on a button, for example "Login", the browser sends a JSON POST request to ( localhost:3000/api/login ) (along with any cookie), which then triggers the Next.js server to send a request to ( localhost:5000 ).  
+  - The browser never directly communicates with Flask - it always goes through the Next.js proxy first.  
+3. Flask sends a response back to :3000 to the Next.js server, not to the browser directly. Then Next.js server sends to the browser (including any cookie).  
+Browser never talk directly with :5000.  
 
-Next.js server - Not part of the Frontend browser. It is also a proxy.
-	•	Deployed on Vercel/AWS/...
-	•	Serves HTML/CSS/JS to users
-	•	Handles API routes
-	•	Runs on mywebsite.com
-Flask server
-	•	Deployed on AWS/Heroku/...
-	•	Handles database/business logic
-	•	Runs on api.mywebsite.com
+Next.js server - Not part of the Frontend browser. It is also a proxy.  
+  •  Deployed on Vercel/AWS/...  
+  •  Serves HTML/CSS/JS to users  
+  •  Handles API routes  
+  •  Runs on mywebsite.com  
+Flask server  
+  •  Deployed on AWS/Heroku/...  
+  •  Handles database/business logic  
+  •  Runs on api.mywebsite.com  
 
-Browser (origin: localhost:3000)
-	↓ Request to same origin (localhost:3000/api/login)
-Next.js Server (origin: localhost:3000) ✅ SAME ORIGIN = NO CORS ISSUES
-	↓ Server-to-server request (not subject to CORS)
-Flask Server (origin: localhost:5000)
+Browser (origin: localhost:3000)  
+  ↓ Request to same origin (localhost:3000/api/login)  
+Next.js Server (origin: localhost:3000) ✅ SAME ORIGIN = NO CORS ISSUES  
+  ↓ Server-to-server request (not subject to CORS)  
+Flask Server (origin: localhost:5000)  
 
-During production, you host both the Next.js Server and the Flask Server in the cloud (in the same computer or different).
+During production, you host both the Next.js Server and the Flask Server in the cloud (in the same computer or different).  
 
-——————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+------
 
-Frontend/ contains those folders created by Next.js:
-Frontend/
-	app/
-		*api/
-			check-auth/
-				route.ts
-			login/
-				route.ts
-			logout/
-				route.ts
-			register/
-				route.ts
-		login/
-			page.tsx                   Login page
-		register/
-			page.tsx                   Register page
-		user/
-			page.tsx                   User page  
-		*.../       
-		globals.css                  
-		layout.tsx                     Shared UI across multiple pages. Includes <html> and <body>
-		page.tsx                       Home page
-	components/                        Reusable custom UI components. More .tsx files
-	hooks/                             Reusable custom React hooks
-	lib/                               Some helper function(s) in .ts file(s)
-	node_modules/
-	public/                            Currently empty
-	styles/                            CSSs
+Frontend/ contains those folders created by Next.js:  
+Frontend/  
+    app/  
+        *api/  
+            check-auth/  
+                route.ts  
+            login/  
+                route.ts  
+            logout/  
+                route.ts  
+            register/  
+                route.ts  
+        login/  
+            page.tsx                   Login page  
+        register/  
+            page.tsx                   Register page  
+        user/  
+            page.tsx                   User page  
+        *.../  
+        globals.css      
+        layout.tsx                     Shared UI across multiple pages. Includes <html> and <body>  
+        page.tsx                       Home page  
+    components/                        Reusable custom UI components. More .tsx files  
+    hooks/                             Reusable custom React hooks  
+    lib/                               Some helper function(s) in .ts file(s)  
+    node_modules/  
+    public/                            Currently empty  
+    styles/                            CSSs  
 
-————
+------
 
-Folder with * in front means you need to add new folders/files to create new pages in this website.
+Folder with * in front means you need to add new folders/files to create new pages in this website.  
 
-Those page.tsx files include all the frontend logic (besides logic for hitting api which is placed within the api/ folder) and includes the "template html" in JSX format.
+Those page.tsx files include all the frontend logic (besides logic for hitting api which is placed within the api/ folder) and includes the "template html" in JSX format.  
 
-When a user types ( yoursite.com/login ) in the browser:
-Browser → Next.js Router → app/login/page.tsx → Login() function executes
-	•	That function is automatically used by Next.js's App Router: you don't explicitly import or call it anywhere in your code.
-	•	If I want to create a new Next.js page for ( yoursite.com/another ), I just need to create "another" folder within app folder and place a page.tsx file within "another". And make sure that page.tsx looks similar to previous .tsx files provided by V0.
+When a user types ( yoursite.com/login ) in the browser:  
+Browser → Next.js Router → app/login/page.tsx → Login() function executes  
+  •  That function is automatically used by Next.js's App Router: you don't explicitly import or call it anywhere in your code.  
+  •  If I want to create a new Next.js page for ( yoursite.com/another ), I just need to create "another" folder within app folder and place a page.tsx file within "another". And make sure that page.tsx looks similar to previous .tsx files provided by V0.  
 
-————
+------
 
-Also within Frontend/ are those 9 files:
-NPM:
-package.json
-package-lock.json
+Also within Frontend/ are those 9 files:  
+NPM:  
+package.json  
+package-lock.json  
 
-PNPM (another package manager):
-pnpm-lock.yaml
+PNPM (another package manager):  
+pnpm-lock.yaml  
 
-CSS:
-postcss.config.mjs
-Tailwind CSS (https://ui.shadcn.com/):
-tailwind.config.ts
-components.json
+CSS:  
+postcss.config.mjs  
+Tailwind CSS (https://ui.shadcn.com/):  
+tailwind.config.ts  
+components.json  
 
-TS:
-tsconfig.json
+TS:  
+tsconfig.json  
 
-Next.js:
-next-env.d.ts
-next.config.mjs
+Next.js:  
+next-env.d.ts  
+next.config.mjs  
