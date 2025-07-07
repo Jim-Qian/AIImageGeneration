@@ -105,7 +105,8 @@ def register():
         password = data.get('password')
 
         manager = getSQLManager()
-        newUser = User(username, password, 0)
+        User_StartingBalance = secrets.get("User_StartingBalance")
+        newUser = User(username, password, User_StartingBalance)
         isSuccessful = newUser.insertIntoDB(manager)
 
         if isSuccessful:

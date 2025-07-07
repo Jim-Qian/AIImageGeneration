@@ -1,16 +1,25 @@
-                                                     Summary
+                                                     **Summary**
 
-npm run dev                                   ->  Runs Frontend
-redis-server                                  ->  Runs Redis Server
-flask --app controller2 run --host=localhost  ->  Runs Backend
+**Steps for starting this website (no debugging locally):**
+source env/bin/activate                                                ->  Enable local Python environment
 
-Steps (localhost):
+Backend/npm run dev                                                    ->  Runs Frontend
+Backend/redis-server                                                   ->  Runs Redis Server
+PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs Backend (use this command directly in project folder)
+                                                                       
+
+**Steps for starting this website (debugging locally):**
+1. Same as above do for all parts you are not debugging.
+2. Comment out all portions except the 1 you are debugging in ".vscode/launch.json".
+3. Start VS Code.
+
+
+**Steps on how this website works (localhost):**
 	1.	Browser goes to localhost:3000. Gets served generated HTML and CSS and Javascript built from ts, tsx, and css by Next.js.
 	2.	When browser clicks on a button, for example "Login", the browser sends a JSON POST request to ( localhost:3000/api/login ) (along with any cookie), which then triggers the Next.js server to send a request to ( localhost:5000 ).
 	⁃	The browser never directly communicates with Flask - it always goes through the Next.js proxy first.
 	3.	Flask sends a response back to :3000 to the Next.js server, not to the browser directly. Then Next.js server sends to the browser (including any cookie).
 Browser never talk directly with :5000.
-
 
 Next.js server - Not part of the Frontend browser. It is also a proxy.
 	•	Deployed on Vercel/AWS/...
@@ -22,7 +31,6 @@ Flask server
 	•	Handles database/business logic
 	•	Runs on api.mywebsite.com
 
-
 Browser (origin: localhost:3000)
 	↓ Request to same origin (localhost:3000/api/login)
 Next.js Server (origin: localhost:3000) ✅ SAME ORIGIN = NO CORS ISSUES
@@ -31,7 +39,7 @@ Flask Server (origin: localhost:5000)
 
 During production, you host both the Next.js Server and the Flask Server in the cloud (in the same computer or different).
 
-————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+——————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 Frontend/ contains those folders created by Next.js:
 Frontend/
