@@ -38,7 +38,8 @@ During production, you host both the Next.js Server and the Flask Server in the 
 
 ------
 
-Frontend/ contains those folders created by Next.js:  
+**Frontend/ contains those folders created by Next.js**:  
+```
 Frontend/  
     app/  
         *api/  
@@ -66,8 +67,7 @@ Frontend/
     node_modules/  
     public/                            Currently empty  
     styles/                            CSSs  
-
-------
+```
 
 Folder with * in front means you need to add new folders/files to create new pages in this website.  
 
@@ -80,7 +80,7 @@ Browser → Next.js Router → app/login/page.tsx → Login() function executes
 
 ------
 
-Also within Frontend/ are those 9 files:  
+**Also within Frontend/ are those 9 files**:  
 NPM:  
 package.json  
 package-lock.json  
