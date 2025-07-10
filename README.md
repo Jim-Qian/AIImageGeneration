@@ -1,7 +1,7 @@
 **Steps for starting this website (no debugging locally):**  
 source env/bin/activate                                                ->  Enable local Python environment  
 
-Backend/npm run dev                                                    ->  Runs Frontend  
+Frontend/npm run dev                                                    ->  Runs Frontend  
 Backend/redis-server                                                   ->  Runs Redis Server  
 PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs Backend (use this command directly in project folder)                                   
 

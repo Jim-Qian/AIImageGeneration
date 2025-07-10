@@ -247,6 +247,12 @@ def sendAIImageGenerationRequest():
 
 # ----------------------------------------------------------------------------------------------------
     
-# DEBUG
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True)  # DEBUG
+
+    HTTPSCertificate_PublicKey = secrets.get("HTTPSCertificate_PublicKey")
+    HTTPSCertificate_PrivateKey = secrets.get("HTTPSCertificate_PrivateKey")
+    app.run(host='0.0.0.0',  # Allow access from any IP
+            port=443,
+            ssl_context=(HTTPSCertificate_PublicKey, HTTPSCertificate_PrivateKey))
