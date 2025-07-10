@@ -1,3 +1,5 @@
+[Link https://jimdemo.online] https://jimdemo.online/
+
 **Steps for starting this website (no debugging locally):**  
 source env/bin/activate                                                ->  Enable local Python environment  
 
@@ -17,7 +19,7 @@ PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs 
   •  Double check using nslookup
 4. Install and use Certbot to get HTTPS certificate for your website
 5. Install, modify, and start Nginx (to serve HTTPS certificate)
-6. Run all those above commands
+6. Run all those above commands to start your backend code.
 
 ------
 
