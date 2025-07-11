@@ -10,6 +10,7 @@ flask_session/
 
 # dependencies
 node_modules/
+env/
 
 # next.js build artifacts
 .next/

@@ -1,15 +1,27 @@
+https://jimdemo.online/
+
 **Steps for starting this website (no debugging locally):**  
 source env/bin/activate                                                ->  Enable local Python environment  
 
-Frontend/npm run dev                                                    ->  Runs Frontend  
+Frontend/npm run dev                                                   ->  Runs Frontend  
 Backend/redis-server                                                   ->  Runs Redis Server  
 PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs Backend (use this command directly in project folder)                                   
 
 **Steps for starting this website (debugging locally):**  
 1. Same as above do for all parts you are not debugging.  
 2. Comment out all portions except the 1 you are debugging in ".vscode/launch.json".  
-3. Start VS Code.  
+3. Start VS Code.
 
+**Steps for starting this website (on cloud for HTTPS):**
+1. Rent a domain (example.com)
+2. Rent a cloud instance. Open its 443 and 80 port.
+3. Add 2 A records to that domain using DNS: 1 for "www.example.com" and 1 for "example.com". Both to the public IP address of cloud instance.
+  •  Double check using nslookup
+4. Install and use Certbot to get HTTPS certificate for your website
+5. Install, modify, and start Nginx (to serve HTTPS certificate)
+6. Run all those above commands to start your own backend code. Do those with pm2 so they persist and can reboot when EC2 instance restarts.
+
+------
 
 **Steps on how this website works (localhost):**  
 1. Browser goes to localhost:3000. Gets served generated HTML and CSS and Javascript built from ts, tsx, and css by Next.js.  
