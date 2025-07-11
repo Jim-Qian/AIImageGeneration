@@ -3,7 +3,7 @@ https://jimdemo.online/
 **Steps for starting this website (no debugging locally):**  
 source env/bin/activate                                                ->  Enable local Python environment  
 
-Backend/npm run dev                                                    ->  Runs Frontend  
+Frontend/npm run dev                                                   ->  Runs Frontend  
 Backend/redis-server                                                   ->  Runs Redis Server  
 PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs Backend (use this command directly in project folder)                                   
 
@@ -19,7 +19,7 @@ PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs 
   •  Double check using nslookup
 4. Install and use Certbot to get HTTPS certificate for your website
 5. Install, modify, and start Nginx (to serve HTTPS certificate)
-6. Run all those above commands to start your own backend code.
+6. Run all those above commands to start your own backend code. Do those with pm2 so they persist and can reboot when EC2 instance restarts.
 
 ------
 
