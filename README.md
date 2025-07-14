@@ -19,7 +19,7 @@ PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs 
   •  Double check using nslookup
 4. Install and use Certbot to get HTTPS certificate for your website
 5. Install, modify, and start Nginx (to serve HTTPS certificate)
-6. Run all those above commands to start your own backend code. Do those with pm2 so they persist and can reboot when EC2 instance restarts.
+6. Run all those above commands to start your own backend code. Do those with pm2 so they persist and can reboot when EC2 instance restarts. I recommend using a cloud host with 4GB of RAM (using 1GB shuts down pm2 and can't even allow ssh to it).
 
 ------
 
