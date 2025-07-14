@@ -21,6 +21,14 @@ PYTHONPATH=Backend FLASK_APP=controller2 flask run --host=localhost    ->  Runs 
 5. Install, modify, and start Nginx (to serve HTTPS certificate)
 6. Run all those above commands to start your own backend code. Do those with pm2 so they persist and can reboot when EC2 instance restarts. I recommend using a cloud host with 4GB of RAM (using 1GB shuts down pm2 and can't even allow ssh to it).
 
+**Steps for pm2:**
+1. cd /home/ec2-user/AIImageGeneration
+2. pm2 start "npm run dev" --name Frontend --cwd ./Frontend
+3. pm2 start ./Production/start-backend.sh --name Backend
+4. pm2 start "redis-server" --name Redis
+5. sudo env PATH=$PATH:/usr/bin /usr/lib/nodejs18/lib/node_modules/pm2/bin/pm2 startup systemd -u ec2-user --hp /home/ec2-user
+6. pm2 save
+
 ------
 
 **Steps on how this website works (localhost):**  
